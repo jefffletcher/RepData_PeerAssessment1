@@ -5,16 +5,47 @@ output:
     keep_md: true
 ---
 
+# Activity Analysis
+
+This assignment makes use of data from a personal activity monitoring device. This device collects data at 5 minute intervals through out the day. The data consists of two months of data from an anonymous individual collected during the months of October and November, 2012 and include the number of steps taken in 5 minute intervals each day.
 
 ## Loading and preprocessing the data
-
+```{r loadData}
+activity_data <- read.csv("activity.csv", header=TRUE)
+```
 
 
 ## What is mean total number of steps taken per day?
+```{r}
+library(reshape2)
+melted_activity_data <- melt(activity_data, id=c("date"),
+                             measure.vars=("steps"), na.rm=TRUE)
+sum_melted_data <- dcast(melted_activity_data, date~variable, sum)
+hist(sum_melted_data$steps, breaks=25, main="Steps Per Day",
+     xlab="Number of steps taken each day", col="lightblue")
 
+steps_per_day_mean <- format(mean(sum_melted_data$steps), digits=8)
+steps_per_day_median <- median(sum_melted_data$steps)
+```
+Mean of the total number of steps taken per day: `r steps_per_day_mean`
+
+Median of the total number of steps taken per day: `r steps_per_day_median`
 
 
 ## What is the average daily activity pattern?
+```{r}
+melted_activity_data <- melt(activity_data, id=c("interval"),
+                             measure.vars=("steps"), na.rm=TRUE)
+mean_melted_data <- dcast(melted_activity_data, interval~variable, mean)
+plot(mean_melted_data$interval, mean_melted_data$steps, type="l",
+     main="Average Daily Activity", xlab="5-minute interval",
+     ylab="Average number of steps taken")
+```
+
+Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
+```{r}
+mean_melted_data[which.max(mean_melted_data$steps),]
+```
 
 
 
