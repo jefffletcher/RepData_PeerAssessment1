@@ -82,33 +82,33 @@ I have chosen to use the previously-created mean_melted_data to fill in empty va
 
 
 ```r
-activity_data_impuned <- activity_data
-for (i in which(is.na(activity_data_impuned$steps)))
-  activity_data_impuned[i, 1] <-
-    mean_melted_data[which(mean_melted_data[,1]==activity_data_impuned[i,3]),2]
+activity_data_imputed <- activity_data
+for (i in which(is.na(activity_data_imputed$steps)))
+  activity_data_imputed[i, 1] <-
+    mean_melted_data[which(mean_melted_data[,1]==activity_data_imputed[i,3]),2]
 ```
 
 
 ```r
-melted_activity_data_impuned <- melt(activity_data_impuned, id=c("date"),
+melted_activity_data_imputed <- melt(activity_data_imputed, id=c("date"),
                              measure.vars=("steps"))
-sum_melted_data_impuned <- dcast(melted_activity_data_impuned, date~variable, sum)
-hist(sum_melted_data_impuned$steps, breaks=25, main="Steps Per Day (with impuned data)",
+sum_melted_data_imputed <- dcast(melted_activity_data_imputed, date~variable, sum)
+hist(sum_melted_data_imputed$steps, breaks=25, main="Steps Per Day (with imputed data)",
      xlab="Number of steps taken each day", col="lightblue")
 ```
 
 ![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png) 
 
 ```r
-steps_per_day_mean_impuned <- format(mean(sum_melted_data_impuned$steps), digits=8)
-steps_per_day_median_impuned <- format(median(sum_melted_data_impuned$steps), digits=8)
+steps_per_day_mean_imputed <- format(mean(sum_melted_data_imputed$steps), digits=8)
+steps_per_day_median_imputed <- format(median(sum_melted_data_imputed$steps), digits=8)
 ```
 
 Mean of the total number of steps taken per day: 10766.189
 
 Median of the total number of steps taken per day: 10766.189
 
-By adding impuned data, the mean number of steps per day remained the same, while the median became equal to the mean.
+By adding imputed data, the mean number of steps per day remained the same, while the median became equal to the mean.
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
@@ -117,12 +117,12 @@ Create a new factor variable in the dataset with two levels – “weekday” an
 
 
 ```r
-activity_data_impuned$day <- ifelse(grepl("Sat|Sun", weekdays(as.Date(activity_data_impuned$date), abbreviate=TRUE)), "weekend", "weekday")
+activity_data_imputed$day <- ifelse(grepl("Sat|Sun", weekdays(as.Date(activity_data_imputed$date), abbreviate=TRUE)), "weekend", "weekday")
 ```
 
 
 ```r
-melted_activity_data_day <- melt(activity_data_impuned, id=c("interval", "day"), measure.vars=("steps"))
+melted_activity_data_day <- melt(activity_data_imputed, id=c("interval", "day"), measure.vars=("steps"))
 mean_melted_data_day <- dcast(melted_activity_data_day, interval~day, mean)
 plot.par <- par(mfrow=c(2,1))
 plot(mean_melted_data_day$interval, mean_melted_data_day$weekday, type="l", main="Average Weekday Activity", xlab="", ylab="Average number of steps taken")
